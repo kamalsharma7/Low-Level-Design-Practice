@@ -13,9 +13,9 @@ public:
 };
 
 class Cart{
-private:
-    vector<product*> cartlist;
 public:
+    vector<product*> cartlist;
+
     void addproduct(product* product){
         cartlist.push_back(product);
         cout<<"product-"<<product->name<<" added sucessfully in cart"<<endl;
@@ -28,16 +28,26 @@ public:
         }
         cout<<"total price is-"<<total_price<<endl;
     }
+};
+
+class InvoicePrinter{
+public:
     
-    void invoicedao(){
-        for(int i=0;i<cartlist.size();i++){
-            cout<<"Invoice print for product - "<<cartlist[i]->name<<" and price is -"<<cartlist[i]->price<<endl;
+    void invoicedao(Cart* cart){
+        for(int i=0;i<(cart->cartlist).size();i++){
+            cout<<"Invoice print for product - "<<(cart->cartlist)[i]->name<<" and price is -"<<(cart->cartlist)[i]->price<<endl;
         }
     }
+};
+
+class SaveDbDao{
+public:
     
-    void savedbdao(){
-        cout<<"all the items are successfully saved in db";
+    void savedbdao(Cart* cart){
+        for(int i=0;i<(cart->cartlist).size();i++){
+            cout<<"Product is successfully saved in db-"<<(cart->cartlist)[i]->name << "and price- "<< (cart->cartlist)[i]->price;
     }
+}
 };
 
 int main() {
@@ -50,8 +60,14 @@ int main() {
     cart1.addproduct(new product("bag",1500));
     
     cart1.calculatetotalprice();
-    cart1.invoicedao();
-    cart1.savedbdao();
+    
+    InvoicePrinter invoice;
+    invoice.invoicedao(&cart1);
+
+    SaveDbDao dbdao;
+    dbdao.savedbdao(&cart1);
+
+
     
     return 0;
 }    
