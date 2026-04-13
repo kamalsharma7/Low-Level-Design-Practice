@@ -58,6 +58,15 @@ class SaveMongoDao : public SaveDbDao{
   }  
 };
 
+class SaveSQLDao : public SaveDbDao{
+  void savedbdao(Cart* cart) override {
+      for(int i=0;i<(cart->cartlist).size();i++){
+        cout<<"save in SQL-db product -"<<(cart->cartlist)[i]->name<<endl;
+      }
+  }  
+};
+
+
 int main() {
     
     Cart cart1;
@@ -72,6 +81,9 @@ int main() {
 
     SaveDbDao* dbdao = new SaveMongoDao();
     dbdao->savedbdao(&cart1);
+    
+    SaveDbDao* dbdao2 = new SaveSQLDao();
+    dbdao2->savedbdao(&cart1);
     
     return 0;
 }    
