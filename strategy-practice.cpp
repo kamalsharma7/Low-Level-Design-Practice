@@ -49,7 +49,7 @@ public:
 class flyingjetrobo:public flyrobots{
 public:
     void fly() override {
-        cout<<"I am Jet flying robo 3"<<endl;
+        cout<<"I am Jet flying robo"<<endl;
     }
 };
 
