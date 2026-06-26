@@ -1,65 +1,3 @@
-//ZOMATO- FOOD DELIEVERY APP
-
-/*
-Core Functional Requirements
-Users can search restaurants.
-Users can view menus.
-Users can add items to cart.
-Users can place orders.
-Users can make payments.
-Restaurants can accept/reject orders.
-Delivery partners can deliver orders.
-Users can track orders.
-Users can rate restaurants and delivery partners.
-
-
-Multiple addresses per user?
-Home / Office / Other addresses?
-
-Cart management
-Can cart contain items from multiple restaurants?
-What if restaurant changes menu price after item is added?
-
-
-
-Order Lifecycle
-Design order states.
-What states can an order have?
-Can order be cancelled?
-Can restaurant cancel?
-
-
-Payment
-COD?
-UPI?
-Wallet?
-Refund support?
-
-
-Notification
-Need notifications through:
-SMS
-Email
-Push Notification
-How will you design it?
-
-
-Delivery Assignment
-Need multiple assignment algorithms:
-Nearest Driver
-Highest Rated Driver
-Least Busy Driver
-How will you support this?
-
-Restaurant Search
-Need different search strategies:
-By Cuisine
-By Rating
-By Distance
-How will you design?
-*/
-
-
 #include<bits/stdc++.h>
 #include<mutex>
 using namespace std;
@@ -70,6 +8,12 @@ public:
     int code;
     string name;
     double price;
+
+    MenuItem(int code1 , string name1 , double price1){
+        code=code1;
+        name=name1;
+        price=price1;
+    }
 };
 
 class Restaurant{ 
@@ -78,6 +22,17 @@ public:
     string name;
     string address;
     vector<MenuItem> menu;
+
+    Restaurant(int id1,string name1 , string address1 , vector<MenuItem> &menu1){
+        id=id1;
+        name=name1;
+        address=address1;
+        menu=menu1;
+    }
+
+    bool operator==(const Restaurant& other) const{
+        return id==other.id;
+    }
 };
 
 // Singleton class
@@ -86,13 +41,12 @@ class RestaurantManager{
 private:
     static RestaurantManager* instance;
     static mutex mtx;
+    vector<Restaurant> restaurants;
 
     RestaurantManager(){
         restaurants={};
     }
 public:
-    vector<Restaurant> restaurants;
-
     static RestaurantManager* getinstance(){
         if(instance==nullptr){
             lock_guard<mutex> lock(mtx);
@@ -103,24 +57,42 @@ public:
         return instance;
     }
 
-    void addRestaurant(Restaurant res){
-        restaurants.push_back(res);
+    void addRestaurant(int id ,string name , string address ,vector<MenuItem> menu){
+        Restaurant new_res(id,name,address,menu);
+        restaurants.push_back(new_res);
+        return;
     }
     void deleteRestaurant(Restaurant res){
         auto it = find(restaurants.begin(),restaurants.end(),res);
         if(it!=restaurants.end()){
-            restaurants.erase(it);
+           restaurants.erase(it);
         }
+        return;
+    }
+
+    void listRestaurants(){
+        for(Restaurant it : restaurants){
+            cout<<"restaurtant id - "<<it.id<<endl;
+            cout<<"restaurtant name - "<<it.name<<endl;
+            cout<<"restaurtant address - "<<it.address<<endl;
+            cout<<"Menu-"<<endl;
+            for(MenuItem dish : it.menu){
+                cout<<"dish - "<<dish.name<<" and price - "<<dish.price<<endl;
+            }
+            cout<<endl;
+        }
+        return;
     }
 };
 
-// why this cannot be inside int main()?
 RestaurantManager* RestaurantManager::instance = nullptr;
 mutex RestaurantManager::mtx;
 
 int main(){
     RestaurantManager* RM1 = RestaurantManager::getinstance();
-    RestaurantManager* RM2 = RestaurantManager::getinstance();
-    cout<<(RM1==RM2)<<endl;
+    RM1->addRestaurant(1,"Barista","cyberhub",{MenuItem(1,"cold coffee" , 270.00) , MenuItem(2,"samosa" , 80.00)});
+    RM1->addRestaurant(1,"Haldiram","Ambience mall",{MenuItem(1,"chole bhature" , 300.00) , MenuItem(2,"Aloo tikki" , 140.00)});
+
+    RM1->listRestaurants();
     return 0;
 }
